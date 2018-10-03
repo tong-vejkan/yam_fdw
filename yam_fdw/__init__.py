@@ -52,12 +52,19 @@ class Yamfdw(ForeignDataWrapper):
 
         self.user = options.get('user')
         self.password = options.get('password')
-
+        self.uri = options.get('uri', 'NO_URI')
+        
         self.db_name = options.get('db', 'test')
         self.collection_name = options.get('collection', 'test')
-
-        self.conn = MongoClient(host=self.host_name,
-                             port=self.port)
+        
+        if self.uri == 'NO_URI':
+            #connect with hostname and port
+            self.conn = MongoClient(host=self.host_name,
+                                 port=self.port)
+        else:
+            #connect with uri
+            #e.g. "mongodb://user:pass@ip/dbname?replicaSet=replica"
+            self.conn = MongoClient(self.uri)
 
         self.auth_db = options.get('auth_db', self.db_name)
 
